@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/content/images/cloud.png" type="image/x-icon">
+    <title>cherry.li</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <meta content="cherry.li" property="og:title" />
+    <meta content="cherry's website" property="og:description" />
+    <meta content="@wikitubia" property="og:site_name" />
+    <meta content="website" property="og:type" />
+    <meta content="en_US" property="og:locale" />
+    <meta content="https://www.cherry.li/assets/content/images/cloud.png" property="og:image" />
+
+    <meta name="title" content="cherry.li" />
+    <meta name="description" content="cherry's website" />
+    <meta name="keywords" content="website,cherry,cherri,apeclient,sigmaclient,sigmajello,sigmaarchives,minecraftclient" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="author" content="https://cherry.li/discord" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+        body {
+            background-color: #111111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .profile-card {
+            background-color: #1A1A1A;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            color: #fff;
+            text-align: center;
+            display: none;
+        }
+
+        .profile-picture {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin: 0 auto 10px;
+            border: 3px solid #30d158;
+        }
+
+        .user-name {
+            font-size: 15px;
+            font-family: "Outfit", sans-serif;
+        }
+
+        .cherry {
+            font-size: 20px;
+            color: #fff;
+            text-align: center;
+            animation: glow 1s ease-in-out infinite alternate;
+        }
+
+        .about {
+            font-size: 14px;
+            font-family: "Pixelify Sans", sans-serif;
+        }
+
+        .status {
+            font-size: 16px;
+        }
+
+        .spotify-column {
+            display: none;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .album-art-box {
+            width: 80px;
+            height: 80px;
+            overflow: hidden;
+            border-radius: 10px;
+            float: left;
+            margin-right: 10px;
+        }
+
+        .album-art-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .song-info {
+            overflow: hidden;
+            font-family: "Pixelify Sans", sans-serif;
+        }
+
+        .spotify-song-title {
+            font-size: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: #555;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .progress-bar {  /* This simply just exists, for now at least. */
+            width: 0;
+            height: 100%;
+            background: linear-gradient(135deg, #1ed760, #1ed760 0%, transparent 0%);
+            border-radius: 5px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .social-icons a {
+            margin: 0 10px;
+            font-size: 24px;
+            color: #fff;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #ccb7f3;
+        }
+
+        .enable-audio {
+            position: fixed;
+            font-family: "Pixelify Sans", sans-serif;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px #000000;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(25px);
+            z-index: -1; 
+        }
+
+        .volume-slider {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+        @-webkit-keyframes glow {
+        from {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #a500e6, 0 0 40px #6c1fe7, 0 0 50px #e60073, 0 0 60px #cfa123, 0 0 70px #42e1f7;
+        }
+  
+       to {
+      text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #7739db, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+  }
+}
+    </style>
+</head>
+<body>
+    <div id="enable-audio" class="enable-audio" onclick="enableAudio()">
+        Click to Proceed
+    </div>
+
+    <video autoplay loop muted class="video-bg" id="background-video">
+        <source src="assets/content/media/Juice WRLD - Robbery (Live) Filmed By @basedxmichael.mp4" type="video/mp4">
+        Your browser doesn't support the video tag.
+    </video>
+
+    <div class="profile-card" id="profile-card">
+        <img class="profile-picture" id="discord-avatar" src="" alt=""> <br>
+        <a class="cherry"><strong>Cherry</strong> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-check-fill" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M15.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L12.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+          <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+        </svg></a>
+        <div class="user-name" id="discord-username">Fetching User Status...</div>
+        <p class="about">"Great things take time"</p>
+        <div class="spotify-column" id="discord-spotify">
+            <div class="album-art-box">
+                <img id="spotify-image" src="" alt="No Cover">
+            </div>
+            <div class="song-info">
+                <div id="spotify-song" class="spotify-song-title"></div>
+                <div id="spotify-artist" class="spotify-artist"></div>
+                <div id="visualizer" class="visualizer"></div>
+            </div>
+        </div>        
+
+        <div class="social-icons">
+            <a href="https://dl.cherry.li"><i class="fa-solid fa-cloud-arrow-down"></i></a>
+            <a href="https://last.fm/user/X9L"><i class="fa-brands fa-lastfm"></i></a>
+            <a href="https://youtube.com/friend"><i class="fab fa-youtube"></i></a>
+            <a href="https://cherry.li/discord"><i class="fab fa-discord"></i></a>
+            <a href="mailto:admin@cherry.li"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+    </div>
+
+    <input type="range" id="volume-slider" class="volume-slider" min="0" max="0.5" step="0.01" value="0.5" style="display: none;">
+
+    <script>
+        function enableAudio() {
+            const video = document.querySelector('.video-bg');
+            video.muted = false;
+            video.play();
+            document.getElementById('enable-audio').style.display = 'none';
+            document.getElementById('profile-card').style.display = 'block';
+            document.getElementById('volume-slider').style.display = 'block';
+        }
+        
+        document.getElementById('volume-slider').addEventListener('input', function() {
+            const video = document.querySelector('.video-bg');
+            video.volume = this.value;
+        });
+        
+
+        const LANYARD_WS = 'wss://api.lanyard.rest/socket';
+        const LANYARD_OP = {
+          PRESENCE: 0,
+          HELLO: 1,
+          INITIALIZE: 2,
+          HEARTBEAT: 3,
+        };
+        const EVENTS_TO_CALLBACK = ['INIT_STATE', 'PRESENCE_UPDATE'];
+        const DISCORD_ID = '719885754444283946'; // Discord User ID ༼ つ ◕_◕ ༽つ
+        
+        let spotifyBarTimer = null;
+        
+        function initializeLanyard(callback) {
+          let ws = new WebSocket(LANYARD_WS);
+        
+          ws.onmessage = ({ data }) => {
+            const received = JSON.parse(data);
+        
+            switch (received.op) {
+              case LANYARD_OP.HELLO: {
+                ws.send(JSON.stringify({ op: LANYARD_OP.INITIALIZE, d: { subscribe_to_id: DISCORD_ID } }));
+        
+                setInterval(() => {
+                  ws.send(JSON.stringify({ op: LANYARD_OP.HEARTBEAT }));
+                }, 1000 * 30);
+              }
+        
+              case LANYARD_OP.PRESENCE: {
+                if (EVENTS_TO_CALLBACK.includes(received.t)) {
+                  callback(received.d);
+                }
+              }
+            }
+          };
+        }
+        
+        function setupBasicInfo({ discord_status, activities, discord_user }) {
+          const status = activities[0]?.state || '';
+          const username = discord_user.username;
+          const avatar = discord_user.avatar;
+          const colorCodes = {
+            online: '#30d158',
+            idle: '#ffa500',
+            dnd: '#ff3b30',
+            offline: '#6c757d',
+          };
+        
+          const usernameElement = document.getElementById('discord-username');
+          const avatarElement = document.getElementById('discord-avatar');
+          const statusElement = document.getElementById('discord-status');
+        
+          usernameElement.innerText = `@${username}`;
+          avatarElement.src = `https://cdn.discordapp.com/avatars/${DISCORD_ID}/${avatar}.webp?size=256`;
+          avatarElement.style.borderColor = colorCodes[discord_status];
+        }
+        
+        function setupSpotify({ listening_to_spotify, spotify }) {
+          if (spotifyBarTimer) clearInterval(spotifyBarTimer);
+        
+          const spotifyElement = document.getElementById('discord-spotify');
+        
+          if (!listening_to_spotify) {
+            spotifyElement.style.display = 'none';
+            return;
+          }
+        
+          spotifyElement.style.display = 'flex';
+        
+          const { song, artist, album_art_url, timestamps } = spotify;
+          const duration = timestamps.end - timestamps.start;
+        
+          const spotifySong = document.getElementById('spotify-song');
+          const spotifyArtist = document.getElementById('spotify-artist');
+          const spotifyImage = document.getElementById('spotify-image');
+          const spotifyBar = document.getElementById('spotify-bar');
+          const spotifyEndTime = document.getElementById('spotify-total-time');
+          const spotifyCurrentTime = document.getElementById('spotify-current-time');
+          const visualizer = document.getElementById('visualizer');
+        
+          spotifySong.innerText = song;
+          spotifyArtist.innerText = artist.replaceAll('; ', ', ');
+          spotifyImage.src = album_art_url;
+        
+          spotifyEndTime.innerText = convertToTimeString(duration);
+        
+          spotifyBarTimer = setInterval(() => {
+            const current = new Date().getTime() - timestamps.start;
+            const percent = Math.round((current / duration) * 100);
+        
+            spotifyBar.style.background = `linear-gradient(135deg, #1ed760 ${percent}%, #ffffff calc(${percent}% + 1px)`;
+            spotifyCurrentTime.innerText = convertToTimeString(current);
+
+            const lines = Array.from({ length: 20 }, () => Math.random() * 10 + 5).join('px, ') + 'px';
+            visualizer.style.boxShadow = `0 0 ${lines}`;
+          }, 100);
+        }
+        
+        function convertToTimeString(date) {
+          const timeString = new Date(date).toTimeString();
+          const [_, minute, second] = timeString.split(':');
+          const secondFix = second.split(' GMT')[0];
+        
+          return `${minute}:${secondFix}`;
+        }
+        
+        initializeLanyard((data) => {
+          setupBasicInfo(data);
+          setupSpotify(data);
+        });
+    </script>
+</body>
+</html>
