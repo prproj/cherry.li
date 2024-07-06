@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap');
+
+html, body {
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 16px;
+    background: #0a1213;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0px;
+    margin: 0px;
+}
+
+img {
+    height: 230px;
+    width: 630px;
+    object-fit: cover;
+    border: 2px solid #edf7ea;
+    margin-bottom: -3px;
+}
+
+nav {
+    color: #edf7ea;
+    background-color: #131714;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    margin-top: 0px;
+    text-align: center;
+    border: 2px solid #edf7ea;
+    border-top: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+ul {
+    list-style-type: none;
+    margin-left: -35px;
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.clock-box {
+    position: relative;
+    color: #edf7ea;
+    background-color: #131714;
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+}
+
+a {
+    text-decoration: none;
+    color: #edf7ea;
+}
+
+input {
+    background-color: #131714;
+    font: 16px 'Ubuntu Mono', monospace;
+    color: #edf7ea;
+    height: 100%;
+    width: 100%;
+    border: 2px solid #edf7ea;
+    border-top: none;
+    text-align: center;
+    margin-top: 0px;
+    outline: none;
+    padding: 5px;
+}
+
+input::placeholder {
+    color: #edf7ea;
+}
+
+.main-content {
+    text-align: center;
+}
+
+.profile {
+    color: #edf7ea;
+    margin-bottom: 20px;
+}
+
+#username {
+    font-size: 24px;
+    margin: 10px 0;
+}
+
+#description {
+    font-size: 16px;
+}
+
+#spotify-song {
+    font-size: 16px;
+    color: #1ed760;
+    margin-top: 10px;
+}
+
+#status-icon {
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+}
+
+/* i found this on some random website lol - Cherry */
+
+.cherryrgb {
+	color: #f35626;
+	background-image: -webkit-linear-gradient(92deg, #f35626, #feab3a);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	-webkit-animation: hue 10s infinite linear;
+}
+
+.cherryrgb_title {
+	color: #f35626;
+	background-image: -webkit-linear-gradient(92deg, #f35626, #feab3a);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	-webkit-animation: hue 10s infinite linear;
+  color: white;
+  font-size: 1.5em;
+  padding-left: 30px;
+}
+
+@-webkit-keyframes hue {
+  from {
+    -webkit-filter: hue-rotate(0deg);
+  }
+  to {
+    -webkit-filter: hue-rotate(-360deg);
+  }
+}
+
+
+@-webkit-keyframes hue {
+  from {
+    -webkit-filter: hue-rotate(0deg);
+  }
+  to {
+    -webkit-filter: hue-rotate(-360deg);
+  }
+}
