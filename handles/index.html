@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta content="Chinese Handle Generator" property="og:title" />
+    <meta content="Generate a random Chinese character from a list of around 20,902 possible characters." property="og:description" />
+    <meta content="cherry.li" property="og:site_name" />
+    <meta content="website" property="og:type" />
+    <meta content="en_US" property="og:locale" />
+    <meta content="https://cherry.li/spinning_cherry.gif" property="og:image" />
+
+    <meta name="title" content="cherry.li" />
+    <meta name="description" content="cherry's website" />
+    <meta name="keywords" content="website,cherry,cherri,apeclient,sigmaclient" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="author" content="https://cherry.li/discord" />
+    <title>Chinese Handle Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="shortcut icon" href="../assets/content/images/cherry.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 style="font-family: 'Questrial', sans-serif;">Chinese YouTube Handle Generator</h1>
+        <p1>Generate a random Chinese character from a list of around <strong>20,902</strong> possible characters.</p1>
+        <div>
+            <label for="num-characters">Number of characters:</label>
+            <select id="num-characters">
+                <option value="1">1</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                <option value="25">25</option>
+                <option value="custom">Custom</option>
+            </select>
+            <input type="number" id="custom-num-characters" style="display:none;" placeholder="Enter number">
+            <button id="generate-button"><i class="fas fa-check-circle"></i> Generate</button>
+            <button id="save-button"><i class="fas fa-save"></i> Save to Text File</button>
+            <button onclick="window.location.href='https://cherry.li/discord';"><i class="fas fa-globe"></i> Discord</button>
+        </div>
+        <div id="character" class="character"></div>
+        <div id="availability" class="availability"></div>
+    </div>
+    <script src="handle.js"></script>
+</body>
+</html>
