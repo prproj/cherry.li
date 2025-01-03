@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Article 01 | cherry.cat</title>
+        <style>
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap');
+
+html, body {
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 16px;
+    background: #0a1213;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+}
+
+img {
+    height: 230px;
+    width: 630px;
+    object-fit: cover;
+    border: 2px solid #edf7ea;
+    margin-bottom: -3px;
+}
+
+nav {
+    color: #edf7ea;
+    background-color: #131714;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    margin-top: 0px;
+    text-align: center;
+    border: 2px solid #edf7ea;
+    border-top: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+ul {
+    list-style-type: none;
+    margin-left: -35px;
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.clock-box {
+    position: relative;
+    color: #edf7ea;
+    background-color: #131714;
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+}
+
+a {
+    text-decoration: none;
+    color: #edf7ea;
+}
+
+input {
+    background-color: #131714;
+    font: 16px 'Ubuntu Mono', monospace;
+    color: #edf7ea;
+    height: 100%;
+    width: 100%;
+    border: 2px solid #edf7ea;
+    border-top: none;
+    text-align: center;
+    margin-top: 0px;
+    outline: none;
+    padding: 5px;
+}
+
+input::placeholder {
+    color: #edf7ea;
+}
+
+.blog-post {
+    color: #edf7ea;
+    background-color: #131714;
+    padding: 20px;
+    border: 2px solid #edf7ea;
+    margin: 20px auto;
+    max-width: 640px;
+    box-sizing: border-box;
+}
+
+.blog-post h1, .blog-post h2 {
+    color: #edf7ea;
+}
+
+.blog-post p {
+    color: #edf7ea;
+}
+
+pre, code {
+    background-color: #0a1213;
+    color: #edf7ea;
+    padding: 10px;
+    border: 1px solid #edf7ea;
+    font-family: 'Ubuntu Mono', monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
+}
+
+pre.copy-text {
+    cursor: pointer;
+}
+.copy-container {
+    display: flex;
+    align-items: center;
+}
+
+.copy-container button {
+    background-color: #131714;
+    font-family: 'Ubuntu Mono', monospace;
+    color: #edf7ea;
+    border: 2px solid #edf7ea;
+    margin-left: 10px;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.copy-container button:hover {
+    background-color: #edf7ea;
+    color: #131714;
+}
+
+.copy-container button.copied {
+    background-color: #edf7ea;
+    color: #131714;
+    pointer-events: none;
+}
+
+.image-box {
+    border: 2px solid #edf7ea;
+    display: inline-block;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+        </style>
+    </head>
+    <body>
+      </div>
+     
+      <div class="blog-post">
+        <h1><strong>Placeholder Article Title</strong></h1>
+        <P>The'😭' again? Holy shit, it's like you scraped the absolute bottom of the cock sucking leech-infested dumpster of internet humor and proudly presented this festering, maggot-filled pile of putrid shit as if it were some kind of masterpiece. You lazy, unoriginal, dick-chewing waste of oxygen-spamming that crusty, overused emoji isn't fucking funny.
+
+            It's the digital equivalent of shoving your head so far up your own ass you can taste the undigested shit of your own failed attempts at humor. Every time you use that pathetic excuse for expression, I want to vomit, shit myself, and then shove that shit back in your mouth so you can fucking choke on it. You miserable cum-drenched turd, you think plastering '😭' everywhere makes you relatable? No, it makes. you the comedic equivalent of syphilis: contagious, irritating, and a something everyone wants to fucking eradicate. I hope your phone explodes the next time your greasy, unwashed fingers touch that emoji. Fuck you, youra shitty humor, and the festering hellhole that spawned your dumb ass. Go crawl back into whatever shit-stained corner of the internet you oozed out of and rot there, you worthless, brain-rotted fuck.</P> <br>
+        <h2>Strikethrough Text</h2>
+        <p>This is an example of <del>strikethrough</del> text.</p>
+
+        <h2>Code Block</h2> <br>
+        <code>print("Hello World!")</code>
+        <br>
+        <br>
+        <h2>Copy to Clipboard</h2>
+        <div class="copy-container">
+            <pre class="copy-text" id="copyText">Wait, is this a hawk tuah reference 😱😱 Chat! This is a talk tuah reference 🤣🤣🤣. Boi, you won the Internet meme of the day 😂🫱. Only the Balkans with noradrenaline will understand 😈😈☠️☠️</pre>
+            <button id="copyButton" onclick="copyToClipboard()">Copy</button>
+          </div>
+      </div>
+      <script type="text/javascript">
+        function copyToClipboard() {
+          var copyText = document.getElementById("copyText").innerText;
+          var copyButton = document.getElementById("copyButton");
+          navigator.clipboard.writeText(copyText).then(function() {
+            copyButton.textContent = "Copied!";
+            copyButton.classList.add("copied");
+            setTimeout(function() {
+              copyButton.textContent = "Copy";
+              copyButton.classList.remove("copied");
+            }, 1000);
+          }, function(err) {
+            console.error("Async: Could not copy text: ", err);
+          });
+        }
+      </script>
+    </body>
+</html>
