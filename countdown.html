@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown</title>
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Questrial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        #countdown {
+            display: flex;
+            gap: 20px;
+        }
+        .countdown-item {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+        .countdown-item span {
+            display: inline-block;
+            transition: transform 0.5s ease-in-out;
+        }
+        .countdown-label {
+            font-size: 0.8em;
+            margin-top: 5px;
+            color: #bbbbbb;
+        }
+    </style>
+</head>
+<body>
+    <h1></h1>
+    <div id="countdown">
+        <div class="countdown-item"><span id="days">--</span><div class="countdown-label">days</div></div>
+        <div class="countdown-item"><span id="hours">--</span><div class="countdown-label">hours</div></div>
+        <div class="countdown-item"><span id="minutes">--</span><div class="countdown-label">minutes</div></div>
+        <div class="countdown-item"><span id="seconds">--</span><div class="countdown-label">seconds</div></div>
+    </div>
+
+    <script>
+        function updateCountdown() {
+            const targetDate = new Date('February 15, 2025 10:00:00 GMT+05:30');
+            const now = new Date();
+            const diff = targetDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('countdown').innerHTML = '<h2>All the best!</h2>';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            animateCountdown('days', days);
+            animateCountdown('hours', hours);
+            animateCountdown('minutes', minutes);
+            animateCountdown('seconds', seconds);
+        }
+
+        function animateCountdown(id, value) {
+            const element = document.getElementById(id);
+            if (element.innerText !== value.toString()) {
+                element.style.transform = 'translateY(-100%)';
+                setTimeout(() => {
+                    element.innerText = value;
+                    element.style.transform = 'translateY(0)';
+                }, 200);
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>
