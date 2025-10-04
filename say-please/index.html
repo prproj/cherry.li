@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Protected Code</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #ffffff;
+            margin-bottom: 50px;
+            text-align: center;
+            font-weight: 300;
+            font-size: 24px;
+            letter-spacing: -0.3px;
+        }
+        
+        .locked-section {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        .unlocked-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 18px 0;
+            font-size: 16px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #333333;
+            color: #ffffff;
+            margin-bottom: 40px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            transition: border-color 0.3s ease;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-bottom-color: #666666;
+        }
+        
+        .password-input::placeholder {
+            color: #444444;
+        }
+        
+        .unlock-btn {
+            width: 100%;
+            padding: 18px;
+            background: transparent;
+            color: #ffffff;
+            border: 1px solid #333333;
+            border-radius: 0;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 400;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .unlock-btn:hover {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+        }
+
+        .unlock-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .error-msg {
+            color: #666666;
+            margin-top: 20px;
+            font-size: 13px;
+            font-weight: 300;
+            display: none;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+        
+        .code-block {
+            background: transparent;
+            color: #888888;
+            padding: 0;
+            border: none;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.9;
+            margin-top: 40px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-weight: 400;
+        }
+        
+        .success-msg {
+            color: #666666;
+            font-weight: 300;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+        
+        .lock-icon {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 40px;
+            opacity: 0.5;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: #222222;
+            margin: 30px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="lockedSection" class="locked-section">
+            <div class="lock-icon">◆</div>
+            <h1>say please.</h1>
+            <input type="password" id="passwordInput" class="password-input" placeholder="say please" autofocus>
+            <button onclick="checkPassword()" class="unlock-btn">Unlock Script</button>
+            <div id="errorMsg" class="error-msg">Access denied</div>
+        </div>
+        
+        <div id="unlockedSection" class="unlocked-section">
+            <div class="lock-icon">◇</div>
+            <h1>good boy.</h1>
+            <div class="divider"></div>
+            <div class="code-block" id="codeContent">Loading...</div>
+        </div>
+    </div>
+    
+    <script>
+        const correctPassword = "please";
+        
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+        
+        async function loadCode() {
+            try {
+                const response = await fetch('code.txt');
+                const text = await response.text();
+                document.getElementById('codeContent').textContent = text;
+            } catch (error) {
+                document.getElementById('codeContent').textContent = 'Error loading code file. Make sure code.txt is in the same folder.';
+            }
+        }
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMsg');
+            const lockedSection = document.getElementById('lockedSection');
+            const unlockedSection = document.getElementById('unlockedSection');
+            
+            if (input === correctPassword) {
+                lockedSection.style.display = 'none';
+                unlockedSection.style.display = 'block';
+                errorMsg.style.display = 'none';
+                loadCode();
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+    </script>
+</body>
+</html>
