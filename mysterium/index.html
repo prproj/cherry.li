@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mysterium | Creative Productions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Glitch+Pop&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 3s infinite;
+            box-shadow: 0 0 3px #fff;
+        }
+
+        .star.small {
+            width: 1px;
+            height: 1px;
+        }
+
+        .star.medium {
+            width: 2px;
+            height: 2px;
+        }
+
+        .star.large {
+            width: 3px;
+            height: 3px;
+            box-shadow: 0 0 5px #fff;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.8; }
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Rubik Glitch Pop', system-ui;
+            font-size: 4rem;
+            font-weight: 400;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            color: #ffffff;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            cursor: default;
+            transition: all 0.3s ease;
+        }
+
+        h1:hover {
+            letter-spacing: 12px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            letter-spacing: 3px;
+            color: #888;
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.3s forwards;
+        }
+
+        .floating-orb {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(100, 100, 255, 0.15), rgba(100, 100, 255, 0) 70%);
+            filter: blur(40px);
+            animation: float 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb1 {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .orb2 {
+            bottom: 30%;
+            right: 15%;
+            animation-delay: 2s;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 100, 150, 0.15), rgba(255, 100, 150, 0) 70%);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .divider {
+            width: 500px;
+            height: 1px;
+            background: #333;
+            margin: 40px auto;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.6s forwards;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.9s forwards;
+        }
+
+        .social-link {
+            color: #999;
+            text-decoration: none;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 15px 30px;
+            border: 2px solid #333;
+            background: rgba(20, 20, 20, 0.5);
+            backdrop-filter: blur(10px);
+            transform: rotate(-1deg);
+            display: inline-block;
+        }
+
+        .social-link:nth-child(2) {
+            transform: rotate(1deg);
+        }
+
+        .social-link:hover {
+            color: #ffffff;
+            border-color: #fff;
+            transform: rotate(0deg) translateY(-5px) scale(1.05);
+            background: rgba(40, 40, 40, 0.8);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .social-link::after {
+            content: '→';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%) translateX(-10px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover::after {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+                letter-spacing: 4px;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+                letter-spacing: 2px;
+            }
+
+            .social-links {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .social-link {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-orb orb1"></div>
+    <div class="floating-orb orb2"></div>
+    <div class="stars" id="stars"></div>
+    <div class="container">
+        <h1>MYSTERIUM</h1>
+        <p class="subtitle">Passion driven creative production</p>
+        <div class="divider"></div>
+        <p class="subtitle">EST. 2007</p>
+        
+
+        
+        <div class="social-links">
+            <a href="https://www.youtube.com/channel/UCDoQ8tNd8AipzfHbH14Lyhw/" target="_blank" class="social-link">YOUTUBE</a>
+            <a href="https://x.com/srcleak" target="_blank" class="social-link">TWITTER</a>
+            <a href="mailto:contact@cherry.cat" target="_blank" class="social-link">CONTACT US</a>
+        </div>
+    </div>
+
+    <script>
+        // Create twinkling stars
+        const starsContainer = document.getElementById('stars');
+        const numStars = 80;
+
+        for (let i = 0; i < numStars; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            
+            // Vary star sizes
+            const sizeClass = Math.random();
+            if (sizeClass < 0.6) {
+                star.classList.add('small');
+            } else if (sizeClass < 0.9) {
+                star.classList.add('medium');
+            } else {
+                star.classList.add('large');
+            }
+            
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (2 + Math.random() * 2) + 's';
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>
