@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>comb queries</title>
+<link rel="icon" type="image/png" href="assets/content/images/lock.png"/>
+<script>
+    const titles = [
+      "comb queries",
+      "comb queries ~",
+      "comb queries ~/",
+    ];
+
+    let i = 0;
+    setInterval(() => {
+      document.title = titles[i % titles.length];
+      i++;
+    }, 500);
+    </script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes resultIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes statusIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  body {
+    background: #111;
+    color: #ddd;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+  }
+
+  .wrap { width: 100%; max-width: 680px; }
+
+  h1 {
+    font-size: 16px;
+    font-weight: normal;
+    color: #888;
+    margin-bottom: 28px;
+    letter-spacing: 0.05em;
+    animation: fadeSlideDown 0.5s ease both;
+  }
+  h1 strong { color: #eee; }
+
+  .search-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    animation: fadeSlideDown 0.5s 0.1s ease both;
+  }
+
+  input {
+    flex: 1;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    color: #eee;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus { border-color: #555; }
+  input::placeholder { color: #444; }
+
+  button {
+    background: #222;
+    border: 1px solid #2a2a2a;
+    color: #bbb;
+    font-family: inherit;
+    font-size: 13px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  button:hover { background: #2a2a2a; color: #eee; }
+  button:active { background: #333; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .status {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 16px;
+    min-height: 18px;
+  }
+  .status.ok   { color: #5a5; }
+  .status.none { color: #885; }
+  .status.err  { color: #844; }
+  .status.animate { animation: statusIn 0.25s ease both; }
+
+  .results {
+    border-top: 1px solid transparent;
+    transition: border-color 0.3s;
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .results::-webkit-scrollbar { width: 4px; }
+  .results::-webkit-scrollbar-track { background: transparent; }
+  .results::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+  .results::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+  .results.has-results { border-top-color: #1e1e1e; }
+
+  .result-line {
+    padding: 7px 0;
+    border-bottom: 1px solid #1a1a1a;
+    color: #ccc;
+    word-break: break-all;
+    line-height: 1.5;
+  }
+  .result-line.anim {
+    opacity: 0;
+    animation: resultIn 0.2s ease forwards;
+  }
+  .result-line .hl { color: #7cf; }
+  .result-line[data-has-copy] { cursor: pointer; }
+  .result-line .after-colon { transition: color 0.1s; }
+  .result-line[data-has-copy]:hover .after-colon { color: #eee; }
+  .result-line.copied .after-colon { color: #7cf !important; }
+
+  .load-more {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #555;
+    cursor: pointer;
+    padding: 6px 0;
+    display: none;
+    user-select: none;
+    transition: color 0.15s;
+  }
+  .load-more:hover { color: #999; }
+  .load-more.visible { display: block; }
+
+  /* Folder picker overlay */
+  #overlay {
+    position: fixed;
+    inset: 0;
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    gap: 16px;
+    animation: fadeSlideDown 0.4s ease both;
+  }
+
+  #overlay h2 {
+    font-size: 15px;
+    font-weight: normal;
+    color: #888;
+    letter-spacing: 0.05em;
+  }
+
+  #overlay h2 strong { color: #eee; }
+
+  #overlay p {
+    font-size: 12px;
+    color: #555;
+    text-align: center;
+    max-width: 340px;
+    line-height: 1.7;
+  }
+
+  #pickBtn {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #ccc;
+    font-family: inherit;
+    font-size: 13px;
+    padding: 11px 28px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    letter-spacing: 0.04em;
+  }
+
+  #pickBtn:hover {
+    background: #222;
+    border-color: #555;
+    color: #eee;
+  }
+
+  #folderName {
+    font-size: 11px;
+    color: #5a5;
+    min-height: 16px;
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+<div id="overlay">
+  <h2><strong>cherry.cat</strong> — comb queries</h2>
+  <p>select local <code>data</code> folder to begin.<br>files are read directly from your device.</p>
+  <button id="pickBtn" onclick="pickFolder()">select folder</button>
+  <div id="folderName"></div>
+</div>
+
+<div class="wrap">
+  <h1><strong>cherry.cat</strong> — comb queries</h1>
+  <div class="search-row">
+    <input id="q" type="text" placeholder="e.g. name@domain.com" autocomplete="off" spellcheck="false" />
+    <button id="btn" onclick="runQuery()">Search</button>
+  </div>
+  <div class="status" id="status"></div>
+  <div class="results" id="results"></div>
+  <div class="load-more" id="loadMore" onclick="renderNextChunk()">load more ↓</div>
+</div>
+
+<script>
+const qEl       = document.getElementById('q');
+const btn       = document.getElementById('btn');
+const statusEl  = document.getElementById('status');
+const resultsEl = document.getElementById('results');
+const loadMoreEl= document.getElementById('loadMore');
+
+const CHUNK = 100;
+let allLines = [], renderedCount = 0, currentQuery = '';
+const copyStore = new Map();
+let copyStoreId = 0;
+let dataFolderHandle = null;
+
+qEl.addEventListener('keydown', e => { if (e.key === 'Enter') runQuery(); });
+
+function getCandidatePaths(query) {
+  const q = query.toLowerCase();
+  const isAln = c => c && /[a-z0-9]/.test(c);
+  const l1 = q[0], l2 = q[1], l3 = q[2];
+
+  if (!isAln(l1)) {
+    return ['data/symbols'];
+  }
+
+  if (!isAln(l2)) {
+    return [`data/${l1}`, `data/${l1}/symbols`];
+  }
+
+  if (!isAln(l3)) {
+    return [`data/${l1}`, `data/${l1}/${l2}`, `data/${l1}/${l2}/symbols`];
+  }
+
+  return [`data/${l1}`, `data/${l1}/${l2}`, `data/${l1}/${l2}/${l3}`];
+}
+
+async function resolveFileHandle(pathStr) {
+  const parts = pathStr.replace(/^\//, '').split('/');
+  const fileParts = parts.slice(1);
+  let current = dataFolderHandle;
+  for (let i = 0; i < fileParts.length - 1; i++) {
+    try {
+      current = await current.getDirectoryHandle(fileParts[i]);
+    } catch {
+      return null;
+    }
+  }
+  try {
+    return await current.getFileHandle(fileParts[fileParts.length - 1]);
+  } catch {
+    return null;
+  }
+}
+
+async function fetchDataFile(path, qLow) {
+  if (dataFolderHandle) {
+    const fileHandle = await resolveFileHandle(path);
+    if (!fileHandle) return null;
+    const file = await fileHandle.getFile();
+    const text = await file.text();
+    return processText(text, qLow, path);
+  } else {
+    const r = await fetch(path);
+    if (!r.ok) return null;
+    const ct = r.headers.get('content-type') || '';
+    if (ct.includes('text/html')) return null;
+    const text = await r.text();
+    const trimmed = text.trimStart();
+    if (trimmed.startsWith('<')) return null;
+    return processText(text, qLow, path);
+  }
+}
+
+function processText(text, qLow, path) {
+  const lines = text
+    .split(/\r?\n/)
+    .map(l => l.trimEnd())
+    .filter(l => l.length > 0 && l.toLowerCase().startsWith(qLow));
+
+  lines.sort((a, b) => {
+    const aLow = a.toLowerCase();
+    const bLow = b.toLowerCase();
+    const aExact = aLow === qLow || aLow.startsWith(qLow + ':') || aLow.startsWith(qLow + '@');
+    const bExact = bLow === qLow || bLow.startsWith(qLow + ':') || bLow.startsWith(qLow + '@');
+    if (aExact && !bExact) return -1;
+    if (!aExact && bExact) return 1;
+    return 0;
+  });
+
+  return { path, lines };
+}
+
+async function pickFolder() {
+  if (!window.showDirectoryPicker) {
+    alert('Your browser does not support the File System Access API.\nTry Chrome or Edge.');
+    return;
+  }
+  try {
+    dataFolderHandle = await window.showDirectoryPicker({ mode: 'read' });
+    document.getElementById('folderName').textContent = '📁 ' + dataFolderHandle.name;
+    setTimeout(() => {
+      document.getElementById('overlay').style.display = 'none';
+      qEl.focus();
+    }, 400);
+  } catch (e) {
+    if (e.name !== 'AbortError') {
+      document.getElementById('folderName').textContent = 'Error: ' + e.message;
+    }
+  }
+}
+
+function setStatus(cls, text) {
+  statusEl.className = 'status ' + cls;
+  statusEl.textContent = text;
+  void statusEl.offsetWidth;
+  statusEl.classList.add('animate');
+}
+
+async function runQuery() {
+  const query = qEl.value.trim();
+  if (!query) {
+    statusEl.className = 'status'; statusEl.textContent = '';
+    resultsEl.innerHTML = '';
+    resultsEl.classList.remove('has-results');
+    loadMoreEl.classList.remove('visible');
+    allLines = []; copyStore.clear();
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '...';
+  statusEl.className = 'status';
+  statusEl.textContent = 'searching';
+  resultsEl.innerHTML = '';
+  resultsEl.classList.remove('has-results');
+  loadMoreEl.classList.remove('visible');
+  allLines = []; renderedCount = 0; currentQuery = query;
+  copyStore.clear(); copyStoreId = 0;
+
+  const candidates = getCandidatePaths(query);
+  const qLow = query.toLowerCase();
+  let found = null;
+
+  for (const path of candidates) {
+    try {
+      const result = await fetchDataFile(path, qLow);
+      if (result !== null) { found = result; break; }
+    } catch (_) { continue; }
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Search';
+
+  if (!found) {
+    setStatus('err', 'no data file found');
+    return;
+  }
+  if (found.lines.length === 0) {
+    setStatus('none', `0 results — ${found.path}`);
+    return;
+  }
+
+  allLines = found.lines;
+  setStatus('ok', `${allLines.length.toLocaleString()} result${allLines.length !== 1 ? 's' : ''} — ${found.path}`);
+  resultsEl.classList.add('has-results');
+  renderNextChunk();
+}
+
+function makeRow(line, isFirstBatch, batchIndex) {
+  const query = currentQuery;
+  const div = document.createElement('div');
+  div.className = 'result-line' + (isFirstBatch ? ' anim' : '');
+  if (isFirstBatch) div.style.animationDelay = Math.min(batchIndex * 20, 400) + 'ms';
+
+  const hlSpan = document.createElement('span');
+  hlSpan.className = 'hl';
+  hlSpan.textContent = line.slice(0, query.length);
+  div.appendChild(hlSpan);
+
+  const rest = line.slice(query.length);
+  const colonIdx = rest.indexOf(':');
+
+  if (colonIdx !== -1) {
+    div.appendChild(document.createTextNode(rest.slice(0, colonIdx + 1)));
+    const afterSpan = document.createElement('span');
+    afterSpan.className = 'after-colon';
+    afterSpan.textContent = rest.slice(colonIdx + 1);
+    div.appendChild(afterSpan);
+    const id = copyStoreId++;
+    const fullColonIdx = line.indexOf(':');
+    copyStore.set(id, line.slice(fullColonIdx + 1));
+    div.dataset.hasCopy = id;
+  } else {
+    div.appendChild(document.createTextNode(rest));
+  }
+
+  return div;
+}
+
+function renderNextChunk() {
+  const isFirstBatch = renderedCount === 0;
+  const chunk = allLines.slice(renderedCount, renderedCount + CHUNK);
+  const frag = document.createDocumentFragment();
+  chunk.forEach((line, i) => {
+    frag.appendChild(makeRow(line, isFirstBatch, i));
+  });
+  resultsEl.appendChild(frag);
+  renderedCount += chunk.length;
+
+  if (renderedCount < allLines.length) {
+    loadMoreEl.textContent = `load more — ${renderedCount.toLocaleString()} / ${allLines.length.toLocaleString()} shown ↓`;
+    loadMoreEl.classList.add('visible');
+  } else {
+    loadMoreEl.classList.remove('visible');
+  }
+}
+
+resultsEl.addEventListener('click', e => {
+  const row = e.target.closest('.result-line[data-has-copy]');
+  if (!row) return;
+  const val = copyStore.get(parseInt(row.dataset.hasCopy, 10));
+  if (val === undefined) return;
+  navigator.clipboard.writeText(val).then(() => {
+    row.classList.add('copied');
+    setTimeout(() => row.classList.remove('copied'), 800);
+  });
+});
+
+resultsEl.addEventListener('scroll', () => {
+  if (renderedCount >= allLines.length) return;
+  const { scrollTop, scrollHeight, clientHeight } = resultsEl;
+  if (scrollTop + clientHeight >= scrollHeight - 150) renderNextChunk();
+});
+</script>
+</body>
+</html>
