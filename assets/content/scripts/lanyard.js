@@ -72,7 +72,7 @@ function setupSpotify({ listening_to_spotify, spotify }) {
   const spotifyElement = document.getElementById('spotify-song');
 
   if (!listening_to_spotify) {
-    spotifyElement.innerText = 'No song currently playing';
+    spotifyElement.innerText = 'No song playing on Spotify';
     return;
   }
 
