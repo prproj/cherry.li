@@ -50,13 +50,34 @@
             <p id="splash-title">> click anywhere ‧₊˚ <</p>
         </div>
     </div>
-    <video id="bg-video" src="assets/content/media/easter_pink.mp4" loop muted playsinline></video>
+    <video id="bg-video" loop muted playsinline></video>
+
+    <script>
+        const videos = [
+            { src: 'assets/content/media/easter_pink.mp4', title: 'fakemink - Easter Pink (prod. Suzy Sheer)', url: 'https://www.youtube.com/watch?v=KB5TKob9PeA' },
+            { src: 'assets/content/media/slayr.mp4', title: 'slayr - Died But Came Back', url: 'https://www.youtube.com/watch?v=3qMLygNGvhM' },
+            { src: 'assets/content/media/underscores.mp4', title: 'underscores - Music', url: 'https://www.youtube.com/watch?v=UNYqwpx7Cys' },
+            { src: 'assets/content/media/music_and_me.mp4', title: 'fakemink - Music and Me (prod. Ok)', url: 'www.youtube.com/watch?v=UKQup7bw0Xo' },
+            { src: 'assets/content/media/the_band.mp4', title: 'glaive & kurtains - The Band', url: 'https://www.youtube.com/watch?v=7balJbFBPS4' },
+            { src: 'assets/content/media/glaive.mp4', title: 'glaive & kurtains - The Troubles', url: 'https://www.youtube.com/watch?v=KcUEC6y6MQg' },
+        ];
+
+        const picked = videos[Math.floor(Math.random() * videos.length)];
+        const bgVideo = document.getElementById('bg-video');
+        bgVideo.src = picked.src;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const songName = document.getElementById('song-name');
+            songName.textContent = picked.title;
+            songName.onclick = () => window.open(picked.url, '_blank', 'noopener,noreferrer');
+        });
+    </script>
     <div id="now-playing">
         <button id="mute-btn" title="Toggle mute" aria-label="Toggle mute">
             <svg id="icon-sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
             <svg id="icon-mute" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
         </button>
-        <span id="song-name" onclick="window.open('https://www.youtube.com/watch?v=KB5TKob9PeA', '_blank', 'noopener,noreferrer')" style="cursor:pointer">fakemink - Easter Pink (prod. Suzy Sheer)</span>
+        <span id="song-name" style="cursor:pointer"></span>
     </div>
 
     <div class="main-content">
@@ -92,7 +113,7 @@
             </script>
         </div>
         <div class="image-container">
-            <img src="assets/content/images/wmp.gif" alt="cherry blossom">
+            <img src="assets/content/images/forest.gif" alt="cherry blossom">
         </div>
         <nav>
             <ul>
@@ -120,7 +141,6 @@
 
     <script>
         const splash = document.getElementById('splash');
-        const bgVideo = document.getElementById('bg-video');
         const muteBtn = document.getElementById('mute-btn');
         const iconSound = document.getElementById('icon-sound');
         const iconMute = document.getElementById('icon-mute');
@@ -144,6 +164,7 @@
             iconMute.style.display  = bgVideo.muted ? 'block' : 'none';
         });
     </script>
+
     <script src="assets/content/scripts/lanyard.js"></script>
     <script src="assets/content/scripts/motd.js"></script>
     <script>
