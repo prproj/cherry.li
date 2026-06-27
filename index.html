@@ -142,11 +142,14 @@
 
     <script>
         const splash = document.getElementById('splash');
+        const splashTitle = document.getElementById('splash-title');
         const muteBtn = document.getElementById('mute-btn');
         const iconSound = document.getElementById('icon-sound');
         const iconMute = document.getElementById('icon-mute');
 
-        splash.addEventListener('click', () => {
+        let clicked = false;
+
+        function revealSite() {
             bgVideo.muted = false;
             bgVideo.volume = 0.4;
             bgVideo.play();
@@ -156,7 +159,30 @@
                 splash.style.display = 'none';
                 document.querySelector('.main-content').classList.add('revealed');
                 document.getElementById('now-playing').classList.add('visible');
-            }, 0);
+            }, 300);
+        }
+
+        splash.addEventListener('click', () => {
+            if (clicked) return;
+            clicked = true;
+            bgVideo.muted = false;
+            bgVideo.volume = 0.4;
+            bgVideo.load();
+            splashTitle.textContent = '> loading... <';
+            splashTitle.style.animation = 'none';
+            void splashTitle.offsetWidth;
+            splashTitle.style.animation = 'splashBlink 1s ease-in-out infinite';
+            if (bgVideo.readyState >= 4) {
+                bgVideo.play();
+                revealSite();
+            } else {
+                bgVideo.addEventListener('canplaythrough', () => {
+                    revealSite();
+                }, { once: true });
+                setTimeout(() => {
+                    if (clicked) revealSite();
+                }, 8000);
+            }
         });
 
         muteBtn.addEventListener('click', () => {
