@@ -10,6 +10,7 @@
                                                    /$$  | $$                                  
                                                   |  $$$$$$/                                  
                                                    \______/                                                                              
+Last Updated on August 9, 2026 ‧₊˚                                              
 -->
 <!DOCTYPE html>
 <html>
@@ -45,34 +46,184 @@
     <link rel="stylesheet" href="assets/content/stylesheets/style.css">
 </head>
 <body>
+    <div id="loading-screen">
+        <p id="loading-text">loading ‧₊˚⋅</p>
+    </div>
     <div id="splash">
         <div id="splash-inner">
             <p id="splash-title">> click anywhere ‧₊˚ <</p>
         </div>
     </div>
     <video id="bg-video" loop muted playsinline></video>
-
     <script>
         const videos = [
             { src: 'assets/content/media/easter_pink.mp4', title: 'fakemink - Easter Pink (prod. Suzy Sheer)', url: 'https://www.youtube.com/watch?v=KB5TKob9PeA' },
-            { src: 'assets/content/media/slayr.mp4', title: 'slayr - Died But Came Back', url: 'https://www.youtube.com/watch?v=3qMLygNGvhM' },
-            { src: 'assets/content/media/underscores.mp4', title: 'underscores - Music', url: 'https://www.youtube.com/watch?v=UNYqwpx7Cys' },
+            { src: 'assets/content/media/on_tha_line.mp4', title: 'Yeat - On tha line', url: 'https://www.youtube.com/watch?v=QfKBrsRBncI' },
+            { src: 'assets/content/media/burn_it.mp4', title: 'ok, fakemink - Burn It', url: 'https://www.youtube.com/watch?v=DA-HKwoK7cw' },
             { src: 'assets/content/media/music_and_me.mp4', title: 'fakemink - Music and Me (prod. Ok)', url: 'www.youtube.com/watch?v=UKQup7bw0Xo' },
-            { src: 'assets/content/media/the_band.mp4', title: 'glaive & kurtains - The Band', url: 'https://www.youtube.com/watch?v=7balJbFBPS4' },
-            { src: 'assets/content/media/glaive.mp4', title: 'glaive & kurtains - The Troubles', url: 'https://www.youtube.com/watch?v=KcUEC6y6MQg' },
+            { src: 'assets/content/media/the_band.mp4', title: 'glaive, kurtains - The Band', url: 'https://www.youtube.com/watch?v=7balJbFBPS4' },
+            { src: 'assets/content/media/lobby.mp4', title: 'OsamaSon - Lobby', url: 'https://www.youtube.com/watch?v=F3MvxI5vtPY' },
             { src: 'assets/content/media/CONSTANTLY.mp4', title: 'Tiffany Day, slayr - CONSTANTLY', url: 'https://www.youtube.com/watch?v=nN_9yv67qHY' },
+            { src: 'assets/content/media/nothing_like_uuu.mp4', title: 'Nettspend - Nothing like uuu', url: 'https://www.youtube.com/watch?v=gPU7MNJu00A' },
+            { src: 'assets/content/media/its_a_dream.mp4', title: 'Snow Strippers, Lil Uzi Vert - It`s A Dream', url: 'https://www.youtube.com/watch?v=_15LxerePQs' },
+            { src: 'assets/content/media/PRETTY4U.mp4', title: 'Tiffany Day - PRETTY4U', url: 'https://www.youtube.com/watch?v=4yYAptebRvI' },
         ];
-
-        const picked = videos[Math.floor(Math.random() * videos.length)];
+        let currentTrackIndex = Math.floor(Math.random() * videos.length);
+        let picked = videos[currentTrackIndex];
         const bgVideo = document.getElementById('bg-video');
         bgVideo.src = picked.src;
+        bgVideo.load();
 
-        document.addEventListener('DOMContentLoaded', () => {
+        function updateSongInfo() {
             const songName = document.getElementById('song-name');
             songName.textContent = picked.title;
             songName.onclick = () => window.open(picked.url, '_blank', 'noopener,noreferrer');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSongInfo();
         });
+
+        function playNextTrack() {
+            currentTrackIndex = (currentTrackIndex + 1) % videos.length;
+            picked = videos[currentTrackIndex];
+            bgVideo.src = picked.src;
+            bgVideo.load();
+            bgVideo.play();
+            updateSongInfo();
+            bgVideo.addEventListener('timeupdate', applyAccentColor, { once: true });
+        }
+
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (!loadingScreen) return;
+            loadingScreen.classList.add('hidden');
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 300);
+        }
+
+        bgVideo.addEventListener('canplaythrough', hideLoadingScreen, { once: true });
+        setTimeout(hideLoadingScreen, 15000);
+
+        function getDominantColor(video) {
+            const sampleSize = 32;
+            const c = document.createElement('canvas');
+            c.width = sampleSize;
+            c.height = sampleSize;
+            const cx = c.getContext('2d', { willReadFrequently: true });
+            cx.drawImage(video, 0, 0, sampleSize, sampleSize);
+            const { data } = cx.getImageData(0, 0, sampleSize, sampleSize);
+            const HUE_BUCKETS = 24;
+            const buckets = Array.from({ length: HUE_BUCKETS }, () => ({ weight: 0, r: 0, g: 0, b: 0 }));
+            let totalWeight = 0;
+            let sumR = 0, sumG = 0, sumB = 0, count = 0;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i], g = data[i + 1], b = data[i + 2];
+                sumR += r; sumG += g; sumB += b; count++;
+
+                const { h, s, l } = rgbToHsl(r, g, b);
+                const weight = s * (1 - Math.abs(l - 0.5) * 2);
+                if (weight <= 0.02) continue;
+
+                const idx = Math.min(HUE_BUCKETS - 1, Math.floor(h * HUE_BUCKETS));
+                buckets[idx].weight += weight;
+                buckets[idx].r += r * weight;
+                buckets[idx].g += g * weight;
+                buckets[idx].b += b * weight;
+                totalWeight += weight;
+            }
+
+            let best = null;
+            for (const bucket of buckets) {
+                if (bucket.weight > 0 && (!best || bucket.weight > best.weight)) best = bucket;
+            }
+
+            if (!best || totalWeight < 2) {
+                return { r: sumR / count, g: sumG / count, b: sumB / count };
+            }
+
+            return {
+                r: best.r / best.weight,
+                g: best.g / best.weight,
+                b: best.b / best.weight,
+            };
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s;
+            const l = (max + min) / 2;
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    default: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return { h, s, l };
+        }
+
+        function hslToRgb(h, s, l) {
+            let r, g, b;
+            if (s === 0) {
+                r = g = b = l;
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1 / 6) return p + (q - p) * 6 * t;
+                    if (t < 1 / 2) return q;
+                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                    return p;
+                };
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1 / 3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1 / 3);
+            }
+            return {
+                r: Math.round(r * 255),
+                g: Math.round(g * 255),
+                b: Math.round(b * 255),
+            };
+        }
+
+        function applyAccentColor() {
+            const dominant = getDominantColor(bgVideo);
+            const hsl = rgbToHsl(dominant.r, dominant.g, dominant.b);
+
+            let accentRgb;
+            if (hsl.s < 0.06) {
+                accentRgb = { r: 138, g: 227, b: 243 };
+            } else {
+                accentRgb = hslToRgb(hsl.h, Math.max(hsl.s, 0.5), Math.min(Math.max(hsl.l, 0.58), 0.74));
+            }
+
+            const accent = `rgb(${accentRgb.r}, ${accentRgb.g}, ${accentRgb.b})`;
+            document.documentElement.style.setProperty('--accent-color', accent);
+        }
     </script>
+    <div id="playback-bar">
+        <button id="next-track-btn" title="Next track" aria-label="Next track">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+        <div id="seek-track">
+            <div id="seek-fill"></div>
+        </div>
+    </div>
+    <div id="volume-hint">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <span>scroll to adjust the volume.</span>
+    </div>
     <div id="now-playing">
         <button id="mute-btn" title="Toggle mute" aria-label="Toggle mute">
             <svg id="icon-sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
@@ -80,6 +231,7 @@
         </button>
         <span id="song-name" style="cursor:pointer"></span>
     </div>
+    <canvas id="visualizer"></canvas>
 
     <div class="main-content">
         <div class="profile">
@@ -114,7 +266,7 @@
             </script>
         </div>
         <div class="image-container">
-            <img src="assets/content/images/forest.gif" alt="cherry blossom">
+            <canvas id="ascii-canvas" width="630" height="230"></canvas>
         </div>
         <nav>
             <ul>
@@ -150,20 +302,91 @@
             bgVideo.muted = false;
             bgVideo.volume = 0.4;
             bgVideo.play();
+            setupVisualizer();
+            bgVideo.addEventListener('timeupdate', applyAccentColor, { once: true });
 
             splash.style.opacity = '0';
             setTimeout(() => {
                 splash.style.display = 'none';
                 document.querySelector('.main-content').classList.add('revealed');
                 document.getElementById('now-playing').classList.add('visible');
+                document.getElementById('playback-bar').classList.add('visible');
+                showVolumeHint();
             }, 0);
         });
 
+        function showVolumeHint() {
+            const hint = document.getElementById('volume-hint');
+            hint.classList.add('visible');
+            setTimeout(() => {
+                hint.classList.remove('visible');
+            }, 3000);
+        }
+
+        function updateMuteIcon() {
+            const muted = bgVideo.muted || bgVideo.volume === 0;
+            iconSound.style.display = muted ? 'none' : 'block';
+            iconMute.style.display  = muted ? 'block' : 'none';
+        }
+
         muteBtn.addEventListener('click', () => {
             bgVideo.muted = !bgVideo.muted;
-            iconSound.style.display = bgVideo.muted ? 'none' : 'block';
-            iconMute.style.display  = bgVideo.muted ? 'block' : 'none';
+            updateMuteIcon();
         });
+
+        document.addEventListener('wheel', (e) => {
+            if (splash.style.display !== 'none') return;
+
+            e.preventDefault();
+
+            const step = 0.05;
+            let newVolume = bgVideo.volume + (e.deltaY < 0 ? step : -step);
+            newVolume = Math.min(1, Math.max(0, newVolume));
+            bgVideo.volume = newVolume;
+
+            if (newVolume === 0) {
+                bgVideo.muted = true;
+            } else {
+                bgVideo.muted = false;
+            }
+
+            updateMuteIcon();
+        }, { passive: false });
+
+        const seekTrack = document.getElementById('seek-track');
+        const seekFill = document.getElementById('seek-fill');
+        const nextTrackBtn = document.getElementById('next-track-btn');
+
+        function updateSeekBar() {
+            if (bgVideo.duration) {
+                const pct = (bgVideo.currentTime / bgVideo.duration) * 100;
+                seekFill.style.width = pct + '%';
+            }
+            requestAnimationFrame(updateSeekBar);
+        }
+        requestAnimationFrame(updateSeekBar);
+
+        function seekToPointer(e) {
+            if (!bgVideo.duration) return;
+            const rect = seekTrack.getBoundingClientRect();
+            const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+            bgVideo.currentTime = ratio * bgVideo.duration;
+        }
+
+        let isSeeking = false;
+        seekTrack.addEventListener('pointerdown', (e) => {
+            isSeeking = true;
+            seekTrack.setPointerCapture(e.pointerId);
+            seekToPointer(e);
+        });
+        seekTrack.addEventListener('pointermove', (e) => {
+            if (isSeeking) seekToPointer(e);
+        });
+        seekTrack.addEventListener('pointerup', () => {
+            isSeeking = false;
+        });
+
+        nextTrackBtn.addEventListener('click', playNextTrack);
     </script>
 
     <script src="assets/content/scripts/lanyard.js"></script>
@@ -177,6 +400,124 @@
             const el = document.getElementById("motd");
             motdObserver.observe(el, { childList: true, characterData: true, subtree: true });
         });
+    </script>
+    <script>
+        (function() {
+            const asciiCanvas = document.getElementById('ascii-canvas');
+            const ctx = asciiCanvas.getContext('2d');
+
+            const CHAR_RAMP = ' .:-=+*#%@';
+            const CELL_W = 7;
+            const CELL_H = 12;
+            const cols = Math.floor(asciiCanvas.width / CELL_W);
+            const rows = Math.floor(asciiCanvas.height / CELL_H);
+
+            const sampleCanvas = document.createElement('canvas');
+            sampleCanvas.width = cols;
+            sampleCanvas.height = rows;
+            const sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+
+            ctx.font = `${CELL_H}px 'Ubuntu Mono', monospace`;
+            ctx.textBaseline = 'top';
+
+            let lastFrameTime = 0;
+            const FRAME_INTERVAL = 90;
+
+            function renderAsciiFrame(timestamp) {
+                if (timestamp - lastFrameTime >= FRAME_INTERVAL) {
+                    lastFrameTime = timestamp;
+
+                    if (bgVideo.readyState >= 2) {
+                        sampleCtx.drawImage(bgVideo, 0, 0, cols, rows);
+                        const frame = sampleCtx.getImageData(0, 0, cols, rows).data;
+
+                        ctx.fillStyle = '#000000';
+                        ctx.fillRect(0, 0, asciiCanvas.width, asciiCanvas.height);
+                        ctx.fillStyle = '#edf7ea';
+
+                        for (let y = 0; y < rows; y++) {
+                            for (let x = 0; x < cols; x++) {
+                                const i = (y * cols + x) * 4;
+                                const r = frame[i], g = frame[i + 1], b = frame[i + 2];
+                                const brightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+                                const charIndex = Math.min(CHAR_RAMP.length - 1, Math.floor(brightness * CHAR_RAMP.length));
+                                const char = CHAR_RAMP[charIndex];
+                                if (char !== ' ') {
+                                    ctx.fillText(char, x * CELL_W, y * CELL_H);
+                                }
+                            }
+                        }
+                    }
+                }
+                requestAnimationFrame(renderAsciiFrame);
+            }
+
+            requestAnimationFrame(renderAsciiFrame);
+        })();
+    </script>
+    <script>
+        let visualizerReady = false;
+
+        function setupVisualizer() {
+            if (visualizerReady) return;
+            visualizerReady = true;
+
+            const canvas = document.getElementById('visualizer');
+            const ctx = canvas.getContext('2d');
+
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            const audioCtx = new AudioContextClass();
+            const source = audioCtx.createMediaElementSource(bgVideo);
+            const analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 128;
+            analyser.smoothingTimeConstant = 0.85;
+
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+            function resizeCanvas() {
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = window.innerWidth * dpr;
+                canvas.height = canvas.clientHeight * dpr;
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            function draw() {
+                requestAnimationFrame(draw);
+                analyser.getByteFrequencyData(dataArray);
+
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+                ctx.clearRect(0, 0, width, height);
+
+                const binCount = dataArray.length;
+                const totalBars = binCount * 2;
+                const gap = 3;
+                const barWidth = (width - gap * (totalBars - 1)) / totalBars;
+                const center = totalBars / 2;
+
+                ctx.fillStyle = '#edf7ea';
+                for (let i = 0; i < totalBars; i++) {
+                    const distFromCenter = Math.abs(i - center + 0.5);
+                    const freqIndex = Math.min(binCount - 1, Math.floor((distFromCenter / center) * binCount));
+                    const amplitude = dataArray[freqIndex] / 255;
+
+                    const barHeight = amplitude * height * 0.55;
+                    const x = i * (barWidth + gap);
+                    const y = height - barHeight;
+                    ctx.globalAlpha = 0.08 + amplitude * 0.32;
+                    ctx.fillRect(x, y, barWidth, barHeight);
+                }
+                ctx.globalAlpha = 1;
+            }
+            draw();
+
+            canvas.classList.add('visible');
+        }
     </script>
 </body>
 </html>
